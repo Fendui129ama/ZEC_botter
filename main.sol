@@ -306,3 +306,80 @@ contract ZEC_botter {
         if (sightIdUsed[sightId]) revert ZBt_SightingExists();
         if (msg.value < ZBT_SIGHT_FEE) revert ZBt_StakeTooSmall();
         if (privacyTier == 0 || privacyTier > ZBT_PRIVACY_MAX) revert ZBt_TierOutOfRange();
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        if (lane.phase != ZbtLanePhase.Live) revert ZBt_LaneRetired();
+        if (lane.sightCount >= ZBT_MAX_SIGHTINGS) revert ZBt_CapHit();
+        sightIdUsed[sightId] = true;
+        sightings[sightId] = ZbtSighting({
+            laneId: laneId,
+            bot: msg.sender,
+            walletFingerprint: walletFingerprint,
+            privacyTier: privacyTier,
+            upAcks: 0,
+            downAcks: 0,
+            stakeWei: msg.value,
+            loggedAt: uint64(block.timestamp),
+            exists: true
+        });
+        unchecked {
+            lane.sightCount += 1;
+            lane.reputationSum = ZbtMath.saturatingAdd(
+                lane.reputationSum, uint256(privacyTier) * 100, ZBT_REP_CAP
+            );
+            botOperators[msg.sender].sightTally += 1;
+        }
+        botRep[activeEpoch][msg.sender] += uint256(privacyTier) * 10;
+        totalStakeWei += msg.value;
+        _sightsByBot[msg.sender].push(sightId);
+        emit Watched(sightId, laneId, msg.sender, privacyTier);
+    }
+
+    function ackSighting(bytes32 sightId, bool up) external whenGridLive {
+        ZbtSighting storage s = sightings[sightId];
+        if (!s.exists) revert ZBt_SightingMissing();
+        if (s.bot == msg.sender) revert ZBt_SelfAck();
+        if (ackCast[sightId][msg.sender]) revert ZBt_AlreadyAck();
+        ackCast[sightId][msg.sender] = true;
+        if (up) unchecked { s.upAcks += 1; }
+        else unchecked { s.downAcks += 1; }
+        emit Acked(sightId, msg.sender, up);
+    }
+
+    function stakeSighting(bytes32 sightId) external payable nonReentrant whenGridLive {
+        if (msg.value == 0) revert ZBt_ZeroAmt();
+        ZbtSighting storage s = sightings[sightId];
+        if (!s.exists) revert ZBt_SightingMissing();
+        s.stakeWei += msg.value;
+        totalStakeWei += msg.value;
+        _sendNative(s.bot, msg.value);
+        emit Staked(sightId, msg.sender, msg.value);
+    }
+
+    function joinBot(bytes32 label) external payable nonReentrant whenGridLive {
+        if (msg.value < ZBT_BOT_STAKE) revert ZBt_StakeTooSmall();
+        if (botOperators[msg.sender].active) revert ZBt_BotExists();
+        botOperators[msg.sender] = ZbtBotOperator({
+            active: true,
+            label: label,
+            joinedAt: uint64(block.timestamp),
+            sightTally: 0
+        });
+        totalStakeWei += msg.value;
+        emit BotJoined(msg.sender, label);
+    }
+
+    function queueScan(bytes32 scanId, uint256 laneId, bytes32 walletTag)
+        external
+        payable
+        nonReentrant
+        whenGridLive
+        onlyActiveBot
+    {
+        if (scanId == bytes32(0)) revert ZBt_DigestVoid();
+        if (scanIdUsed[scanId]) revert ZBt_AlertOpen();
+        if (msg.value < ZBT_SIGHT_FEE) revert ZBt_StakeTooSmall();
+        if (openScanJobs >= ZBT_OPEN_ALERT_CAP) revert ZBt_CapHit();
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        if (lane.phase != ZbtLanePhase.Live) revert ZBt_LaneRetired();
+        scanIdUsed[scanId] = true;
+        scanJobs[scanId] = ZbtScanJob({
