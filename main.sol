@@ -383,3 +383,80 @@ contract ZEC_botter {
         if (lane.phase != ZbtLanePhase.Live) revert ZBt_LaneRetired();
         scanIdUsed[scanId] = true;
         scanJobs[scanId] = ZbtScanJob({
+            laneId: laneId,
+            requester: msg.sender,
+            walletTag: walletTag,
+            phase: ZbtScanPhase.Queued,
+            resultHash: bytes32(0),
+            confidence: 0,
+            queuedAt: uint64(block.timestamp)
+        });
+        unchecked {
+            openScanJobs += 1;
+            lane.scanCount += 1;
+        }
+        emit Scanned(scanId, laneId, walletTag);
+    }
+
+    function sealScan(bytes32 scanId, bytes32 payloadHash, uint16 confidence) external onlyWarden {
+        ZbtScanJob storage j = scanJobs[scanId];
+        if (j.phase != ZbtScanPhase.Queued && j.phase != ZbtScanPhase.Running) revert ZBt_AlertClosed();
+        if (confidence < ZBT_CONF_FLOOR) revert ZBt_ConfLow();
+        if (confidence > ZBT_CONF_CEIL) revert ZBt_ConfHigh();
+        j.phase = ZbtScanPhase.Done;
+        j.resultHash = payloadHash;
+        j.confidence = confidence;
+        if (openScanJobs > 0) unchecked { openScanJobs -= 1; }
+        emit Sealed(scanId, payloadHash, confidence);
+    }
+
+    function publishAlert(
+        bytes32 alertId,
+        uint256 laneId,
+        bytes32 deltaTag,
+        bytes32 summaryHash,
+        uint16 deltaBand
+    ) external onlyWarden whenGridLive {
+        if (alertIdUsed[alertId]) revert ZBt_StaleBot();
+        if (deltaBand < ZBT_DELTA_FLOOR) revert ZBt_ConfLow();
+        if (deltaBand > ZBT_DELTA_CEIL) revert ZBt_ConfHigh();
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        if (lane.phase != ZbtLanePhase.Live) revert ZBt_LaneRetired();
+        alertIdUsed[alertId] = true;
+        alerts[alertId] = ZbtAlertCell({
+            laneId: laneId,
+            deltaTag: deltaTag,
+            summaryHash: summaryHash,
+            deltaBand: deltaBand,
+            stampedAt: uint64(block.timestamp)
+        });
+        emit Alerted(alertId, laneId, deltaBand);
+    }
+
+    function fundBotLane() external payable whenGridLive {
+        if (msg.value == 0) revert ZBt_ZeroAmt();
+        emit Pulse_0(lineSerial, msg.sender, msg.value);
+        unchecked { lineSerial += 1; }
+    }
+
+    function _sendNative(address to, uint256 amt) internal {
+        (bool ok, ) = payable(to).call{value: amt}("");
+        if (!ok) revert ZBt_TransferFail();
+    }
+
+    function _primeEpoch(uint256 epochId) internal {
+        ZbtEpochRail storage e = epochRails[epochId];
+        e.startedAt = uint64(block.timestamp);
+        e.sightWeight = _epochSightWeight();
+        e.scanWeight = openScanJobs;
+        (e.mixHA, e.mixHB) = _splitMix(epochId, e.sightWeight, e.scanWeight);
+    }
+
+    function _splitMix(uint256 epochId, uint256 sw, uint256 scw)
+        internal
+        view
+        returns (bytes32 hA, bytes32 hB)
+    {
+        hA = keccak256(abi.encode(ZBT_DOMAIN, epochId, sw, ADDRESS_A, _MIX_0));
+        hB = keccak256(abi.encode(scw, epochId, ADDRESS_B, _MIX_1, ZBT_EPOCH_BLOCKS));
+    }
