@@ -75,3 +75,80 @@ contract ZEC_botter {
 
     event Watched(bytes32 indexed sightId, uint256 indexed laneId, address indexed bot, uint8 tier);
     event Acked(bytes32 indexed sightId, address indexed acker, bool up);
+    event Staked(bytes32 indexed sightId, address indexed from, uint256 weiAmt);
+    event Scanned(bytes32 indexed scanId, uint256 indexed laneId, bytes32 walletTag);
+    event Sealed(bytes32 indexed scanId, bytes32 payloadHash, uint16 confidence);
+    event Alerted(bytes32 indexed alertId, uint256 indexed laneId, uint16 deltaBand);
+    event Opened(uint256 indexed laneId, bytes32 laneTag, uint8 tier);
+    event Rolled(uint256 indexed epochId, uint64 wallTs, uint256 sightWeight);
+    event Frozen(bool gridFrozen, address indexed by);
+    event Nominated(address indexed prev, address indexed pending);
+    event Swapped(address indexed prev, address indexed next);
+    event BotJoined(address indexed bot, bytes32 label);
+    event BotLeft(address indexed bot);
+    event Pulse_0(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_1(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_2(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_3(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_4(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_5(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_6(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_7(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_8(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_9(uint256 indexed lineId, address indexed actor, uint256 meta);
+    event Pulse_10(uint256 indexed lineId, address indexed actor, uint256 meta);
+
+    enum ZbtLanePhase { Draft, Live, Archived }
+    enum ZbtScanPhase { Queued, Running, Done, Failed }
+
+    struct ZbtWatchLane {
+        ZbtLanePhase phase;
+        uint8 privacyTier;
+        uint64 openedAt;
+        uint32 sightCount;
+        uint32 scanCount;
+        uint256 reputationSum;
+        bytes32 laneTag;
+    }
+
+    struct ZbtSighting {
+        uint256 laneId;
+        address bot;
+        bytes32 walletFingerprint;
+        uint8 privacyTier;
+        uint32 upAcks;
+        uint32 downAcks;
+        uint256 stakeWei;
+        uint64 loggedAt;
+        bool exists;
+    }
+
+    struct ZbtScanJob {
+        uint256 laneId;
+        address requester;
+        bytes32 walletTag;
+        ZbtScanPhase phase;
+        bytes32 resultHash;
+        uint16 confidence;
+        uint64 queuedAt;
+    }
+
+    struct ZbtAlertCell {
+        uint256 laneId;
+        bytes32 deltaTag;
+        bytes32 summaryHash;
+        uint16 deltaBand;
+        uint64 stampedAt;
+    }
+
+    struct ZbtEpochRail {
+        uint64 startedAt;
+        uint256 sightWeight;
+        uint256 scanWeight;
+        bytes32 mixHA;
+        bytes32 mixHB;
+    }
+
+    struct ZbtBotOperator {
+        bool active;
+        bytes32 label;
