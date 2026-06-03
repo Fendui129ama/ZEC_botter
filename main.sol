@@ -152,3 +152,80 @@ contract ZEC_botter {
     struct ZbtBotOperator {
         bool active;
         bytes32 label;
+        uint64 joinedAt;
+        uint32 sightTally;
+    }
+
+    uint256 public constant ZBT_PRIVACY_MAX = 8;
+    uint256 public constant ZBT_SIGHT_FEE = 0.004 ether;
+    uint256 public constant ZBT_BOT_STAKE = 0.04 ether;
+    uint256 public constant ZBT_MAX_SIGHTINGS = 175;
+    uint256 public constant ZBT_OPEN_ALERT_CAP = 52;
+    uint256 public constant ZBT_DELTA_FLOOR = 547;
+    uint256 public constant ZBT_DELTA_CEIL = 9245;
+    uint256 public constant ZBT_EPOCH_BLOCKS = 503;
+    uint256 public constant ZBT_REP_CAP = 18750;
+    uint256 public constant ZBT_CONF_FLOOR = 353;
+    uint256 public constant ZBT_CONF_CEIL = 9194;
+
+    bytes32 private constant _MIX_0 = 0x9e6ca3a7fdce358b93ebc1c3587de0eea02cc2fac075182246e727d23ce34e6d;
+    bytes32 private constant _MIX_1 = 0xbceb518c0d956000ffdbfcf53b2b10b5eae7414096df73d854a021a9ab39b099;
+    bytes32 private constant _MIX_2 = 0x1181979ddf223d56a5a806647f0152b40840e2a003a26e4a1c4b2b027799f28e;
+    bytes32 private constant _MIX_3 = 0x630769bf5a449da4366b87f07963a298ba43d99d9e42b80a1c205fc71d3bc100;
+    bytes32 private constant _MIX_4 = 0x856d978bcf9c8f431fcc861eda2bf0c88ee927ef150d8c7d423ac694ecce4410;
+    bytes32 private constant _MIX_5 = 0x422c8e1effc2632cbcbb92741541018e25a2429a8be9c4cff71e6b1c3f711c77;
+    bytes32 private constant _MIX_6 = 0xfc0063c15316e438fdde36a51d65af9c392c87b519d1e3a6353a389f60f4bdb7;
+    bytes32 private constant _MIX_7 = 0x528669bdd4e6cfe8b0d51b6ad120a6679e05663d010efadf884f27c5920f39b1;
+    bytes32 private constant ZBT_DOMAIN = keccak256("ZEC_botter.saplingMirrorCrawl");
+
+    address public immutable ADDRESS_A;
+    address public immutable ADDRESS_B;
+    address public immutable ADDRESS_C;
+
+    address public warden;
+    address public pendingWarden;
+    bool public gridFrozen;
+    uint256 public activeEpoch;
+    uint256 public lineSerial;
+    uint256 public openScanJobs;
+    uint256 public totalStakeWei;
+    uint256 public genesisBlock;
+
+    mapping(uint256 => ZbtWatchLane) public watchLanes;
+    mapping(bytes32 => ZbtSighting) public sightings;
+    mapping(bytes32 => ZbtScanJob) public scanJobs;
+    mapping(bytes32 => ZbtAlertCell) public alerts;
+    mapping(uint256 => ZbtEpochRail) public epochRails;
+    mapping(uint256 => mapping(address => uint256)) public botRep;
+    mapping(bytes32 => mapping(address => bool)) public ackCast;
+    mapping(bytes32 => bool) public sightIdUsed;
+    mapping(bytes32 => bool) public scanIdUsed;
+    mapping(bytes32 => bool) public alertIdUsed;
+    mapping(address => ZbtBotOperator) public botOperators;
+    mapping(address => bytes32[]) private _sightsByBot;
+    uint256 private _guard;
+
+    modifier nonReentrant() {
+        if (_guard == 2) revert ZBt_Reentered();
+        _guard = 2;
+        _;
+        _guard = 1;
+    }
+
+    modifier onlyWarden() {
+        if (msg.sender != warden) revert ZBt_NotWarden();
+        _;
+    }
+
+    modifier whenGridLive() {
+        if (gridFrozen) revert ZBt_GridFrozen();
+        _;
+    }
+
+    modifier onlyActiveBot() {
+        if (!botOperators[msg.sender].active) revert ZBt_NotBot();
+        _;
+    }
+
+    constructor() {
+        ADDRESS_A = 0xBD713dCb29cD521DB1BB78c94158cEbFCcF9aa55;
