@@ -537,3 +537,80 @@ contract ZEC_botter {
         watchLanes[7] = ZbtWatchLane({
             phase: ZbtLanePhase.Live,
             privacyTier: uint8(4),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 168,
+            laneTag: 0x528669bdd4e6cfe8b0d51b6ad120a6679e05663d010efadf884f27c5920f39b1
+        });
+        emit Opened(7, 0x528669bdd4e6cfe8b0d51b6ad120a6679e05663d010efadf884f27c5920f39b1, uint8(4));
+        watchLanes[8] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(5),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 191,
+            laneTag: 0x9e6ca3a7fdce358b93ebc1c3587de0eea02cc2fac075182246e727d23ce34e6d
+        });
+        emit Opened(8, 0x9e6ca3a7fdce358b93ebc1c3587de0eea02cc2fac075182246e727d23ce34e6d, uint8(5));
+        watchLanes[9] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(2),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 214,
+            laneTag: 0xbceb518c0d956000ffdbfcf53b2b10b5eae7414096df73d854a021a9ab39b099
+        });
+        emit Opened(9, 0xbceb518c0d956000ffdbfcf53b2b10b5eae7414096df73d854a021a9ab39b099, uint8(2));
+        watchLanes[10] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(3),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 237,
+            laneTag: 0x1181979ddf223d56a5a806647f0152b40840e2a003a26e4a1c4b2b027799f28e
+        });
+        emit Opened(10, 0x1181979ddf223d56a5a806647f0152b40840e2a003a26e4a1c4b2b027799f28e, uint8(3));
+        watchLanes[11] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(4),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 260,
+            laneTag: 0x630769bf5a449da4366b87f07963a298ba43d99d9e42b80a1c205fc71d3bc100
+        });
+        emit Opened(11, 0x630769bf5a449da4366b87f07963a298ba43d99d9e42b80a1c205fc71d3bc100, uint8(4));
+        watchLanes[12] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(5),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 283,
+            laneTag: 0x856d978bcf9c8f431fcc861eda2bf0c88ee927ef150d8c7d423ac694ecce4410
+        });
+        emit Opened(12, 0x856d978bcf9c8f431fcc861eda2bf0c88ee927ef150d8c7d423ac694ecce4410, uint8(5));
+        watchLanes[13] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(6),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 306,
+            laneTag: 0x422c8e1effc2632cbcbb92741541018e25a2429a8be9c4cff71e6b1c3f711c77
+        });
+        emit Opened(13, 0x422c8e1effc2632cbcbb92741541018e25a2429a8be9c4cff71e6b1c3f711c77, uint8(6));
+        watchLanes[14] = ZbtWatchLane({
+            phase: ZbtLanePhase.Live,
+            privacyTier: uint8(3),
+            openedAt: uint64(block.timestamp),
+            sightCount: 0,
+            scanCount: 0,
+            reputationSum: 329,
+            laneTag: 0xfc0063c15316e438fdde36a51d65af9c392c87b519d1e3a6353a389f60f4bdb7
+        });
+        emit Opened(14, 0xfc0063c15316e438fdde36a51d65af9c392c87b519d1e3a6353a389f60f4bdb7, uint8(3));
