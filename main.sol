@@ -229,3 +229,80 @@ contract ZEC_botter {
 
     constructor() {
         ADDRESS_A = 0xBD713dCb29cD521DB1BB78c94158cEbFCcF9aa55;
+        ADDRESS_B = 0xF3397F07bbfaF542Bdaa87cA5C020744288525c4;
+        ADDRESS_C = 0x48e159C5Fc2DddB83B504bc337142Db0C756B322;
+        warden = msg.sender;
+        _guard = 1;
+        genesisBlock = block.number;
+        activeEpoch = 1;
+        _primeEpoch(1);
+        _seedWatchLanes();
+    }
+
+    function nominateWarden(address next_) external onlyWarden {
+        if (next_ == address(0)) revert ZBt_BadHandoff();
+        pendingWarden = next_;
+        emit Nominated(warden, next_);
+    }
+
+    function acceptWardenRole() external {
+        if (msg.sender != pendingWarden) revert ZBt_NoHandoff();
+        address prev = warden;
+        warden = pendingWarden;
+        pendingWarden = address(0);
+        emit Swapped(prev, warden);
+    }
+
+    function setGridFrozen(bool v) external onlyWarden {
+        gridFrozen = v;
+        emit Frozen(v, msg.sender);
+    }
+
+    function advanceEpoch() external onlyWarden whenGridLive {
+        uint256 n = activeEpoch + 1;
+        if (n > 32) revert ZBt_BadEpoch();
+        activeEpoch = n;
+        _primeEpoch(n);
+        emit Rolled(n, uint64(block.timestamp), _epochSightWeight());
+    }
+
+    function retireLane(uint256 laneId) external onlyWarden {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        if (lane.phase == ZbtLanePhase.Draft) revert ZBt_LaneMissing();
+        lane.phase = ZbtLanePhase.Archived;
+    }
+
+    function registerBot(address bot, bytes32 label) external onlyWarden {
+        if (bot == address(0)) revert ZBt_ZeroAddr();
+        if (botOperators[bot].active) revert ZBt_BotExists();
+        botOperators[bot] = ZbtBotOperator({
+            active: true,
+            label: label,
+            joinedAt: uint64(block.timestamp),
+            sightTally: 0
+        });
+        emit BotJoined(bot, label);
+    }
+
+    function revokeBot(address bot) external onlyWarden {
+        if (!botOperators[bot].active) revert ZBt_NotBot();
+        botOperators[bot].active = false;
+        emit BotLeft(bot);
+    }
+
+    function withdrawSurplus(uint256 amt, address payable to) external onlyWarden nonReentrant {
+        if (to == address(0)) revert ZBt_ZeroAddr();
+        if (amt == 0 || amt > address(this).balance) revert ZBt_ZeroAmt();
+        _sendNative(to, amt);
+    }
+
+    function logSighting(
+        bytes32 sightId,
+        uint256 laneId,
+        bytes32 walletFingerprint,
+        uint8 privacyTier
+    ) external payable nonReentrant whenGridLive onlyActiveBot {
+        if (sightId == bytes32(0)) revert ZBt_DigestVoid();
+        if (sightIdUsed[sightId]) revert ZBt_SightingExists();
+        if (msg.value < ZBT_SIGHT_FEE) revert ZBt_StakeTooSmall();
+        if (privacyTier == 0 || privacyTier > ZBT_PRIVACY_MAX) revert ZBt_TierOutOfRange();
