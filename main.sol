@@ -1692,3 +1692,80 @@ contract ZEC_botter {
         rep = lane.reputationSum;
         tier = lane.privacyTier;
         tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_1) & 0);
+    }
+
+    function peekLane_18(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_2) & 0);
+    }
+
+    function peekLane_19(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_3) & 0);
+    }
+
+    function peekLane_20(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_4) & 0);
+    }
+
+    function peekLane_21(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_5) & 0);
+    }
+
+    function peekLane_22(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
