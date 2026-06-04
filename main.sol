@@ -1769,3 +1769,80 @@ contract ZEC_botter {
         ZbtWatchLane storage lane = watchLanes[laneId];
         sights = lane.sightCount;
         scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_6) & 0);
+    }
+
+    function peekLane_23(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_7) & 0);
+    }
+
+    function peekLane_24(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_0) & 0);
+    }
+
+    function peekLane_25(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_1) & 0);
+    }
+
+    function peekLane_26(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_2) & 0);
+    }
+
+    function peekLane_27(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
