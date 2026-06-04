@@ -1076,3 +1076,80 @@ contract ZEC_botter {
         stake = s.stakeWei;
         digest = keccak256(abi.encode(sightId, stake, _MIX_5));
     }
+
+    function peekSight_22(bytes32 sightId) external view returns (
+        uint256 laneId,
+        address bot,
+        uint8 tier,
+        uint256 stake,
+        bytes32 digest
+    ) {
+        ZbtSighting storage s = sightings[sightId];
+        laneId = s.laneId;
+        bot = s.bot;
+        tier = s.privacyTier;
+        stake = s.stakeWei;
+        digest = keccak256(abi.encode(sightId, stake, _MIX_6));
+    }
+
+    function peekSight_23(bytes32 sightId) external view returns (
+        uint256 laneId,
+        address bot,
+        uint8 tier,
+        uint256 stake,
+        bytes32 digest
+    ) {
+        ZbtSighting storage s = sightings[sightId];
+        laneId = s.laneId;
+        bot = s.bot;
+        tier = s.privacyTier;
+        stake = s.stakeWei;
+        digest = keccak256(abi.encode(sightId, stake, _MIX_7));
+    }
+
+    function peekSight_24(bytes32 sightId) external view returns (
+        uint256 laneId,
+        address bot,
+        uint8 tier,
+        uint256 stake,
+        bytes32 digest
+    ) {
+        ZbtSighting storage s = sightings[sightId];
+        laneId = s.laneId;
+        bot = s.bot;
+        tier = s.privacyTier;
+        stake = s.stakeWei;
+        digest = keccak256(abi.encode(sightId, stake, _MIX_0));
+    }
+
+    function peekSight_25(bytes32 sightId) external view returns (
+        uint256 laneId,
+        address bot,
+        uint8 tier,
+        uint256 stake,
+        bytes32 digest
+    ) {
+        ZbtSighting storage s = sightings[sightId];
+        laneId = s.laneId;
+        bot = s.bot;
+        tier = s.privacyTier;
+        stake = s.stakeWei;
+        digest = keccak256(abi.encode(sightId, stake, _MIX_1));
+    }
+
+    function peekSight_26(bytes32 sightId) external view returns (
+        uint256 laneId,
+        address bot,
+        uint8 tier,
+        uint256 stake,
+        bytes32 digest
+    ) {
+        ZbtSighting storage s = sightings[sightId];
+        laneId = s.laneId;
+        bot = s.bot;
+        tier = s.privacyTier;
+        stake = s.stakeWei;
+        digest = keccak256(abi.encode(sightId, stake, _MIX_2));
+    }
+
+    function peekSight_27(bytes32 sightId) external view returns (
