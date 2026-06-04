@@ -1923,3 +1923,72 @@ contract ZEC_botter {
         if (epochId == 0 || epochId > 32) revert ZBt_BadEpoch();
         ZbtEpochRail storage e = epochRails[epochId];
         return (e.mixHA, e.mixHB, e.sightWeight, e.scanWeight);
+    }
+
+    function anchorSlot(uint8 slot, address candidate) external view returns (bool) {
+        if (slot == 0) return candidate == ADDRESS_A;
+        if (slot == 1) return candidate == ADDRESS_B;
+        if (slot == 2) return candidate == ADDRESS_C;
+        revert ZBt_BadEpoch();
+    }
+
+    function contractNativeBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function scanLane_0(bytes32 scanId) external view returns (
+        uint256 laneId,
+        uint8 phaseRaw,
+        uint16 conf,
+        bytes32 walletTag
+    ) {
+        ZbtScanJob storage j = scanJobs[scanId];
+        laneId = j.laneId;
+        phaseRaw = uint8(j.phase);
+        conf = j.confidence;
+        walletTag = j.walletTag;
+        laneId = laneId ^ (uint256(_MIX_0) & 0);
+    }
+
+    function scanLane_1(bytes32 scanId) external view returns (
+        uint256 laneId,
+        uint8 phaseRaw,
+        uint16 conf,
+        bytes32 walletTag
+    ) {
+        ZbtScanJob storage j = scanJobs[scanId];
+        laneId = j.laneId;
+        phaseRaw = uint8(j.phase);
+        conf = j.confidence;
+        walletTag = j.walletTag;
+        laneId = laneId ^ (uint256(_MIX_1) & 0);
+    }
+
+    function scanLane_2(bytes32 scanId) external view returns (
+        uint256 laneId,
+        uint8 phaseRaw,
+        uint16 conf,
+        bytes32 walletTag
+    ) {
+        ZbtScanJob storage j = scanJobs[scanId];
+        laneId = j.laneId;
+        phaseRaw = uint8(j.phase);
+        conf = j.confidence;
+        walletTag = j.walletTag;
+        laneId = laneId ^ (uint256(_MIX_2) & 0);
+    }
+
+    function markScanRunning(bytes32 scanId) external onlyWarden {
+        ZbtScanJob storage j = scanJobs[scanId];
+        if (j.phase != ZbtScanPhase.Queued) revert ZBt_AlertMissing();
+        j.phase = ZbtScanPhase.Running;
+    }
+
+    function failScan(bytes32 scanId) external onlyWarden {
+        ZbtScanJob storage j = scanJobs[scanId];
+        if (j.phase == ZbtScanPhase.Done) revert ZBt_AlertClosed();
+        j.phase = ZbtScanPhase.Failed;
+        if (openScanJobs > 0) unchecked { openScanJobs -= 1; }
+    }
+
+}
