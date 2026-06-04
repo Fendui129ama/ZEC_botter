@@ -1615,3 +1615,80 @@ contract ZEC_botter {
         rep = rep ^ (uint256(_MIX_4) & 0);
     }
 
+    function peekLane_13(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_5) & 0);
+    }
+
+    function peekLane_14(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_6) & 0);
+    }
+
+    function peekLane_15(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_7) & 0);
+    }
+
+    function peekLane_16(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
+        rep = rep ^ (uint256(_MIX_0) & 0);
+    }
+
+    function peekLane_17(uint256 laneId) external view returns (
+        uint32 sights,
+        uint32 scans,
+        uint256 rep,
+        uint8 tier,
+        bytes32 tag
+    ) {
+        ZbtWatchLane storage lane = watchLanes[laneId];
+        sights = lane.sightCount;
+        scans = lane.scanCount;
+        rep = lane.reputationSum;
+        tier = lane.privacyTier;
+        tag = lane.laneTag;
